@@ -1,0 +1,250 @@
+                   
+
+#+OPTIONS: date:nil author:nil
+#+OPTIONS: toc:nil 
+#+OPTIONS: tex:dvipng 
+#+OPTIONS: num:nil \n
+#+EXCLUDE_TAGS: noexport
+
+#+LATEX_HEADER: \usepackage{amsthm}
+#+LaTeX_HEADER: \usepackage{graphicx}
+#+LaTeX_HEADER: \usepackage{amsmath}
+#+LaTeX_HEADER: \usepackage{subfig}
+#+LaTeX_HEADER: \usepackage{enumerate}
+#+LaTeX_HEADER: \usepackage[table]{xcolor}
+#+LaTeX_HEADER: \usepackage{colortbl}
+#+LaTeX_HEADER: \usepackage{float}
+#+LaTeX_HEADER: \usepackage{hyperref}
+
+
+#+LaTeX_HEADER: \usepackage[export]{adjustbox}
+#+LaTeX_HEADER: \addtolength{\topmargin}{-.675in}
+#+LaTeX_HEADER: \addtolength{\textheight}{1.35in}
+#+LaTeX_HEADER: \addtolength{\oddsidemargin}{-.675in}
+#+LaTeX_HEADER:	\addtolength{\evensidemargin}{-.675in}
+#+LaTeX_HEADER:	\addtolength{\textwidth}{1.35in}
+
+#+LaTeX_HEADER: \usepackage{tikz}
+#+LaTeX_HEADER: \usetikzlibrary{shapes,arrows,positioning}
+#+LaTeX_HEADER: \usepackage[americanresistors,americaninductors]{circuitikz}
+#+LaTeX_HEADER: \usetikzlibrary{calc,patterns,decorations.pathmorphing,decorations.markings}
+#+LaTeX_HEADER: \usetikzlibrary{circuits.logic.US} 
+
+#+LATEX_HEADER: \renewcommand\maketitle{\vspace{-2.0 in}}
+#+Latex_header: \newcommand{\Velzero}[1]{$#1$}
+#+Latex_header: \newcommand{\Poszero}[1]{$#1$}
+#+Latex_header: \newcommand{\HWhead}[4]{\vspace{-0.0 in} \begin{center}\begin{tabular}{c|l} 	& Instructor: Stevan Dubljevic  \\ \bfseries\sffamily CHE 448 & Student: #4  \\   \huge\bfseries\sffamily\centering Homework  $#1$ &     \large\bfseries\sffamily \\  & \large\bfseries\sffamily  Due Date: $#2$ $#3$ at 5 pm \end{tabular}\end{center} \vspace{0.3 in}}
+
+#+Latex_header: \newcommand{\HWheadns}[3]{\vspace{-0.0 in} \begin{center}\begin{tabular}{c|l} 	& Instructor: Stevan Dubljevic  \\ \bfseries\sffamily CHE 448 &   \\   \huge\bfseries\sffamily\centering Homework  $#1$ &     \large\bfseries\sffamily \\  & \large\bfseries\sffamily  Due Date: $#2$ $#3$ at 5 pm \end{tabular}\end{center} \vspace{0.3 in}}
+
+
+#+Latex_header: \newcommand{\lapqoneone}[4]{\begin{equation} X(s)=\frac{#1}{s^2+#2s+#3}+ \frac{#4(s+#2)}{s^2+#2s+#3} \end{equation}}
+#+Latex_header: \newcommand{\lapqonetwo}[4]{\begin{equation} x(t)=#1{\mathrm{e}}^{-#2t}\left( sin(#3)t)\right)+#4{\mathrm{e}}^{-#2t}\left(cos(#3)t)\right) \end{equation}}
+#+Latex_header: \newcommand{\Pthreesys}[3]{\begin{equation} G(s)=\frac{s^2+#1}{10s^2+#2s+#3} \end{equation}}
+
+#+Latex_header: \newcommand{\Posone}[1]{$#1$}
+
+#+Latex_header: \newcommand{\Sysfour}[2]{\begin{equation*} \dot{x} = \left[ \begin{array}{cc} #1  & 1 \\ #2 & 2 \end{array} \right] x + \left[ \begin{array}{c} 1  \\  0 \end{array} \right] u \end{equation*} \\ \begin{equation*} y = \left[\begin{array}{c} 0 && 1 \end{array} \right]x \end{equation*}}
+
+#+Latex_header: \newcommand{\Despol}[3]{-$#1$,-$#2$,-$#3$}
+#+Latex_header: \newcommand{\Gfunc}[3]{\begin{equation*} G(s)=\frac{K(s+#1)}{s^2(s+#2)} \end{equation*}\\ \begin{equation*} H(s)=\frac{1}{s+#3} \end{equation*}}
+
+
+#+Name: par
+#+Begin_src python :exports none :var filename=(buffer-file-name)
+import os,json,re,sys
+FileNameWithoutExtension=re.split('\.',re.split('/',filename)[-1])[0]
+JSONname=FileNameWithoutExtension+'.json'
+if not os.path.isfile(JSONname):
+    print ("json2dict Error: " + JSONname + " doesn't exist")
+    sys.exit()
+JSON_file=open(JSONname, "r")
+jsondict=json.loads(JSON_file.read())
+JSON_file.close()
+data = [['parameter_name', 'parameter_value'], None, 
+['course', str(jsondict['course'])], 
+['term', str(jsondict['term'])],
+['classnumber', str(jsondict['classnumber'])], 
+['stu_name', str(jsondict['stu_name'])], 
+['stuid', str(jsondict['stuid'])], 
+['token_type', str(jsondict['token_type'])], 
+['token', str(jsondict['token'])], 
+['token_expiration', str(jsondict['token_expiration'])], 
+['message','Please check the information above.' if str(jsondict['message'])=='' else str(jsondict['message'])],
+]
+return data
+#+end_src
+
+#+RESULTS: par
+| parameter_name   | parameter_value                     |
+|------------------+-------------------------------------|
+| course           | CHE576B1                            |
+| term             | Winter Term 2018                    |
+| classnumber      | 82602                               |
+| stu_name         | Ruduke,Dennis                       |
+| stuid            | 1435111                             |
+| token_type       | ACCESS                              |
+| token            | 2BTQUSSE                            |
+| token_expiration | Winter Term 2018                    |
+| message          | Please check the information above. |
+
+
+#+Name: isShell
+#+Begin_src python :var isShell=1 :exports none
+return isShell
+#+end_src
+
+#+RESULTS: isShell
+: 1
+#+begin_comment 
+#+Name: stuname
+#+Begin_src python :var pa=par :results value raw :exports none
+import sys,os,re
+import string
+temp=pa[3][1]
+name=string.replace(temp, ',', ', ')
+return "#+MACRO: Header \HWhead{3}{Feb}{1}{"+str(name)+"}"
+ 
+#+end_src
+
+#+RESULTS: stuname
+#+MACRO: Header \HWhead{3}{Feb}{8}{Ozorio Cassol, Demo}
+#+end_comment 
+
+
+
+#+Name: stuid
+#+Begin_src python :var pa=par :exports none
+import sys,os,re
+return 'stuid='+'\''+pa[4][1]+'\''
+#+end_src
+
+#+RESULTS: stuid
+: stuid='1435111'
+
+
+
+#+begin_comment 
+
+If one wants to find where fink or brew installs ditaa.jar use this script. Just uncomment and use C-c C-c to run it. The RESULTS section should give the path for the ditaa.jar path  
+#+begin_src elisp
+(expand-file-name
+             "ditaa.jar"
+	     (file-name-as-directory
+            (expand-file-name
+                "scripts"
+               (file-name-as-directory
+                  (expand-file-name
+                      "../contrib"
+                     (file-name-directory (org-find-library-dir "org")))))))
+#+end_src
+
+#+RESULTS:
+=/Applications/Emacs.app/Contents/Resources/lisp/contrib/scripts/ditaa.jar
+
+#+end_comment
+
+#+NAME: ab
+#+begin_src python :var input=stuid  :exports none
+import numpy as np
+import math
+ab=np.array([eval(input[7]),eval(input[8]),eval(input[9]),eval(input[10]),eval(input[11]),eval(input[12]),eval(input[13])])
+
+for n in range(7):
+    if(ab[n]== 0):
+         ab[n]=n+1
+
+return ab
+#+end_src
+
+#+RESULTS: ab
+| 1 | 4 | 3 | 5 | 1 | 1 | 1 |
+#+Name: stun
+#+Begin_src python :var pa=par :results value raw :exports none
+import sys,os,re
+return "#+MACRO: Header \HWhead{Demo}{Jun}{20}{"+str(pa[4][1])+"}"
+ 
+#+end_src
+
+#+RESULTS: stun
+#+MACRO: Header \HWhead{Demo}{Jun}{20}{1435111}
+
+
+* 
+  {{{Header}}}
+#+Latex_header: \newcommand{\Qone}[2]{\(#1 \times #2\)}
+#+Latex_header: \newcommand{\Qtwo}[4]{#1 \\ #2 \\ #3 \\ #4}
+
+#+Begin_src python :var sone=ab[4] stwo=ab[5] sthree=ab[6] :results value raw :exports none
+from fractions import Fraction
+import math, random
+s1=float(sone)
+s2=float(stwo)
+s3=float(sthree)
+
+file_object  = open("ansdemo.txt", "w") 
+
+falt=list(range(4))
+ra=math.floor(s1/2.5)
+alt=["A) ","B) ","C) ","D) "]
+ans=[0,1,2]
+ansq = ["Lisbon","Montevideo","Aruba","Bogota"]
+for i in range(4):
+  if i == ra:
+    falt[i]=alt[i]+ansq[3]
+  else:
+    c=random.choice(ans)
+    falt[i]=alt[i]+ansq[c]
+    ans.remove(c)
+ 
+file_object.writelines([str(s1*s2)+"\n"+alt[ra]]) 
+
+
+return "#+MACRO: Qone \Qone{"+str(round(s1,5))+"}{"+str(round(s2,5))+"} \n\
+#+MACRO: Qtwo \Qtwo{"+falt[0]+"}{"+falt[1]+"}{"+falt[2]+"}{"+falt[3]+"}"
+
+#+end_src
+#+RESULTS:
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Montevideo}{C) Aruba}{D) Lisbon}
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Aruba}{C) Lisbon}{D) Montevideo}
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Montevideo}{C) Aruba}{D) Lisbon}
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Aruba}{C) Lisbon}{D) Montevideo}
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Lisbon}{C) Aruba}{D) Montevideo}
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Montevideo}{C) Aruba}{D) Lisbon}
+#+MACRO: Qone \Qone{1.0}{1.0} 
+	#+MACRO: Qtwo \Qtwo{A) Bogota}{B) Lisbon}{C) Montevideo}{D) Aruba}
+
+
+
+
+
+
+
+**  Problem 1
+   
+If \(1+1=2\), what is the result of {{{Qone}}}?
+
+  
+\begin{Form} 
+
+{ This is Question 1's description ? } \\
+    \TextField[name= quest1]{Answer 1: }{\mbox{}}
+\end{Form}
+
+
+** Problem 2
+
+If the capital of Spain is Madrid, the capital of Colombia is:\\
+{{{Qtwo}}}
+
+\begin{Form}
+\\
+\ChoiceMenu[radio, default= null, name= quest6, charsize= 14pt]{\mbox{}}{A=a, B=b, C=c, D=d} \\\\
+\end{Form}
+
